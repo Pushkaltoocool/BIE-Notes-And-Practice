@@ -37,8 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // If navigating to quiz section, reset and show settings
             if (targetSectionId === 'quiz-section') {
                 resetQuiz(); // Ensure quiz settings are visible and ready
+                // Also ensure the quiz settings are shown
+                quizSettings.style.display = 'block';
             } else {
                 clearInterval(timerInterval); // Stop timer if switching away
+                timerDisplay.style.display = 'none'; // Hide timer display
+                document.getElementById('saved-answers-container').style.display = 'none'; // Hide saved section
             }
         });
     });
@@ -55,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Quiz Questions Data ---
 const quizQuestions = [
-
     {
         question: "According to the slides, what are the three core characteristics of a business?",
         type: "mcq",
@@ -1180,26 +1183,33 @@ const quizQuestions = [
     }
 ];
 
-console.log(`Total questions: ${quizQuestions.length}`);
+//console.log(`Total questions: ${quizQuestions.length}`); // Kept for debugging if needed
 
     const quizContainer = document.getElementById('quiz-container');
     const submitQuizBtn = document.getElementById('submit-quiz');
     const retakeQuizBtn = document.getElementById('retake-quiz');
     const quizResults = document.getElementById('quiz-results');
-    const scoreDisplay = document.getElementById('quiz-score'); // Corrected ID
+    const scoreDisplay = document.getElementById('quiz-score');
     const totalQuestionsDisplay = document.getElementById('total-questions');
     const answerFeedback = document.getElementById('answer-feedback');
 
-    // New elements for quiz settings
+    // Quiz settings elements
     const quizSettings = document.getElementById('quiz-settings');
     const numQuestionsSelect = document.getElementById('num-questions');
     const topicFilterSelect = document.getElementById('topic-filter');
     const timeLimitSelect = document.getElementById('time-limit');
     const startQuizBtn = document.getElementById('start-quiz');
     const timerDisplay = document.getElementById('timer-display');
+
+    // Quiz result tabs and saved questions elements
     const correctAnswersTab = document.getElementById('correct-answers-tab');
     const incorrectAnswersTab = document.getElementById('incorrect-answers-tab');
     const allAnswersTab = document.getElementById('all-answers-tab');
+    const savedAnswersTab = document.getElementById('saved-answers-tab'); // New tab
+    const savedAnswersContainer = document.getElementById('saved-answers-container'); // New container
+    const savedAnswersList = document.getElementById('saved-answers-list'); // New list
+    const clearSavedQuestionsBtn = document.getElementById('clear-saved-questions'); // New button
+
     const resetQuizBtn = document.getElementById('reset-quiz');
 
     let userAnswers = [];
@@ -1209,10 +1219,37 @@ console.log(`Total questions: ${quizQuestions.length}`);
     let correctAnswers = [];
     let incorrectAnswers = [];
 
+    // --- Saved Questions Feature Variables ---
+    let savedForReviewQuestions = []; // Array to hold saved questions data
+    const SAVED_QUESTIONS_STORAGE_KEY = 'savedWrongQuestions';
+
+    // Function to load saved questions from local storage
+    function loadSavedQuestions() {
+        const storedQuestions = localStorage.getItem(SAVED_QUESTIONS_STORAGE_KEY);
+        if (storedQuestions) {
+            try {
+                savedForReviewQuestions = JSON.parse(storedQuestions);
+            } catch (e) {
+                console.error("Error parsing saved questions from localStorage:", e);
+                savedForReviewQuestions = [];
+            }
+        }
+    }
+
+    // Function to save current saved questions to local storage
+    function saveQuestionsToLocalStorage() {
+        localStorage.setItem(SAVED_QUESTIONS_STORAGE_KEY, JSON.stringify(savedForReviewQuestions));
+    }
+
     // Populate topic filter options
     function populateTopicFilter() {
         const topics = [...new Set(quizQuestions.map(q => q.topic))];
+        // Sort topics alphabetically, but put 'All Topics' and 'Saved for Review' at the top
+        topics.sort(); 
         topicFilterSelect.innerHTML = '<option value="all">All Topics</option>';
+        // Add "Saved for Review" option
+        topicFilterSelect.innerHTML += '<option value="saved">Saved for Review</option>';
+
         topics.forEach(topic => {
             const option = document.createElement('option');
             option.value = topic;
@@ -1263,9 +1300,18 @@ console.log(`Total questions: ${quizQuestions.length}`);
     function selectQuestions() {
         const numQuestions = parseInt(numQuestionsSelect.value);
         const selectedTopic = topicFilterSelect.value;
-        let filteredQuestions = quizQuestions;
+        let filteredQuestions = [];
         
-        if (selectedTopic !== 'all') {
+        if (selectedTopic === 'all') {
+            filteredQuestions = quizQuestions;
+        } else if (selectedTopic === 'saved') {
+            filteredQuestions = savedForReviewQuestions; // Use saved questions
+            if (filteredQuestions.length === 0) {
+                alert("You have no questions saved for review. Please save some questions or select 'All Topics'.");
+                resetQuiz(); // Reset to default view
+                return;
+            }
+        } else {
             filteredQuestions = quizQuestions.filter(q => q.topic === selectedTopic);
         }
         
@@ -1279,6 +1325,9 @@ console.log(`Total questions: ${quizQuestions.length}`);
     function renderQuiz() {
         quizContainer.innerHTML = ''; // Clear previous quiz
         answerFeedback.innerHTML = ''; // Clear previous feedback
+        savedAnswersList.innerHTML = ''; // Clear saved list
+        savedAnswersContainer.style.display = 'none'; // Hide saved questions container
+
         userAnswers = []; // Reset answers
         correctAnswers = []; // Reset correct answers
         incorrectAnswers = []; // Reset incorrect answers
@@ -1287,15 +1336,19 @@ console.log(`Total questions: ${quizQuestions.length}`);
         retakeQuizBtn.style.display = 'none'; // Hide retake button
         quizSettings.style.display = 'none'; // Hide settings when quiz starts
         resetQuizBtn.style.display = 'none'; // Hide reset button once quiz starts
+        
+        // Reset tab active state to 'All Answers'
         correctAnswersTab.classList.remove('active');
         incorrectAnswersTab.classList.remove('active');
-        allAnswersTab.classList.add('active'); // Default to showing all answers tab
+        savedAnswersTab.classList.remove('active');
+        allAnswersTab.classList.add('active'); 
 
         selectQuestions();
         if (selectedQuestions.length === 0) {
             quizContainer.innerHTML = "<p>No questions found for the selected criteria. Please adjust your settings.</p>";
             submitQuizBtn.style.display = 'none';
             quizSettings.style.display = 'block'; // Show settings if no questions
+            resetQuizBtn.style.display = 'block'; // Allow reset from here
             return;
         }
 
@@ -1312,7 +1365,7 @@ console.log(`Total questions: ${quizQuestions.length}`);
             const optionsGroup = document.createElement('div');
             optionsGroup.classList.add('options-group');
 
-            q.options.forEach((option, optionIndex) => {
+            q.options.forEach((option) => { // Removed optionIndex as it wasn't used
                 const label = document.createElement('label');
                 const input = document.createElement('input');
                 input.value = option;
@@ -1356,14 +1409,12 @@ console.log(`Total questions: ${quizQuestions.length}`);
         clearInterval(timerInterval); // Stop timer
         timerDisplay.style.display = 'none'; // Hide timer display after submission
         let score = 0;
-        answerFeedback.innerHTML = '';
+        answerFeedback.innerHTML = ''; // Clear previous feedback
         correctAnswers = [];
         incorrectAnswers = [];
 
         selectedQuestions.forEach((q, index) => {
             const questionElement = quizContainer.children[index];
-            const feedbackItem = document.createElement('div');
-            feedbackItem.classList.add('feedback-item');
             
             let isCorrect = false;
             let selectedOptions = [];
@@ -1375,20 +1426,21 @@ console.log(`Total questions: ${quizQuestions.length}`);
                 }
             } else if (q.type === "multi-select") {
                 selectedOptions = userAnswers[index];
-                const correctSet = new Set(q.correct.sort()); // Sort to ensure consistent comparison
+                // Ensure correct and user answers are sorted for consistent comparison of sets
+                const correctSet = new Set(q.correct.sort()); 
                 const userSet = new Set(userAnswers[index].sort());
                 
-                // Compare set sizes and elements
                 isCorrect = correctSet.size === userSet.size && 
                             [...userSet].every(val => correctSet.has(val));
             }
 
-            // Store in correct/incorrect arrays
+            // Store in correct/incorrect arrays for filtered views
             const answerData = {
                 question: q.question,
                 topic: q.topic,
                 selected: selectedOptions.length > 0 ? selectedOptions : ['No answer given'],
-                correct: q.correct
+                correct: q.correct,
+                type: q.type // Include type for saving if needed later
             };
 
             if (isCorrect) {
@@ -1430,77 +1482,163 @@ console.log(`Total questions: ${quizQuestions.length}`);
         quizResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // Common function to display feedback items based on provided array
+    function displayFeedbackItems(dataArray, isActiveTab = 'all') {
+        answerFeedback.innerHTML = ''; // Clear main feedback area
+        savedAnswersContainer.style.display = 'none'; // Hide saved questions container
+
+        // Update active tab styles
+        correctAnswersTab.classList.remove('active');
+        incorrectAnswersTab.classList.remove('active');
+        allAnswersTab.classList.remove('active');
+        savedAnswersTab.classList.remove('active');
+        document.getElementById(`${isActiveTab}-answers-tab`).classList.add('active');
+
+        if (dataArray.length === 0) {
+            answerFeedback.innerHTML = '<p>No items to display here.</p>';
+            return;
+        }
+
+        dataArray.forEach((ans) => {
+            const feedbackItem = document.createElement('div');
+            feedbackItem.classList.add('feedback-item');
+            const isCorrect = correctAnswers.includes(ans); // Check if this item is in the correct answers list
+            feedbackItem.classList.add(isCorrect ? 'correct' : 'incorrect');
+            
+            feedbackItem.innerHTML = `<strong>Question:</strong> ${ans.question} (${ans.topic})<br>`;
+            feedbackItem.innerHTML += `Your Answer(s): <span style="font-weight: bold;">${ans.selected.join(', ')}</span><br>`;
+            feedbackItem.innerHTML += `Correct Answer(s): <span style="font-weight: bold;">${ans.correct.join(', ')}</span>`;
+
+            // Add Save for Review button only if it was an incorrect answer and not already saved
+            if (!isCorrect) {
+                const saveButton = document.createElement('button');
+                saveButton.classList.add('btn', 'btn-secondary', 'btn-small-feedback');
+                saveButton.textContent = 'Save for Review';
+                
+                // Use the full answerData object for saving
+                const questionToSave = {
+                    question: ans.question,
+                    topic: ans.topic,
+                    correct: ans.correct,
+                    type: ans.type,
+                    options: selectedQuestions.find(q => q.question === ans.question)?.options || [] // Store options too for full question context
+                };
+
+                // Check if already saved
+                const isAlreadySaved = savedForReviewQuestions.some(sq => sq.question === questionToSave.question);
+                if (isAlreadySaved) {
+                    saveButton.textContent = 'Saved';
+                    saveButton.disabled = true;
+                }
+
+                saveButton.addEventListener('click', (e) => {
+                    // Prevent duplicates
+                    if (!savedForReviewQuestions.some(sq => sq.question === questionToSave.question)) {
+                        savedForReviewQuestions.push(questionToSave);
+                        saveQuestionsToLocalStorage();
+                        e.target.textContent = 'Saved';
+                        e.target.disabled = true;
+                        // If user is on 'Saved for Review' tab, update it
+                        if (savedAnswersTab.classList.contains('active')) {
+                           showSavedAnswers(); // Re-render the saved list to reflect the change
+                        }
+                    }
+                });
+                feedbackItem.appendChild(saveButton);
+            }
+            answerFeedback.appendChild(feedbackItem);
+        });
+    }
+
     // Show all answers
     function showAllAnswers() {
-        answerFeedback.innerHTML = '';
         const allAnswerData = [...correctAnswers, ...incorrectAnswers].sort((a, b) => 
             selectedQuestions.findIndex(q => q.question === a.question) - 
             selectedQuestions.findIndex(q => q.question === b.question)
         );
-
-        allAnswerData.forEach((ans) => {
-            const feedbackItem = document.createElement('div');
-            feedbackItem.classList.add('feedback-item');
-            const isCorrect = correctAnswers.includes(ans);
-            feedbackItem.classList.add(isCorrect ? 'correct' : 'incorrect');
-            feedbackItem.innerHTML = `<strong>Question:</strong> ${ans.question} (${ans.topic})<br>`;
-            feedbackItem.innerHTML += `Your Answer(s): <span style="font-weight: bold;">${ans.selected.join(', ')}</span><br>`;
-            feedbackItem.innerHTML += `Correct Answer(s): <span style="font-weight: bold;">${ans.correct.join(', ')}</span>`;
-            answerFeedback.appendChild(feedbackItem);
-        });
-        correctAnswersTab.classList.remove('active');
-        incorrectAnswersTab.classList.remove('active');
-        allAnswersTab.classList.add('active');
+        displayFeedbackItems(allAnswerData, 'all');
     }
 
     // Show correct answers
     function showCorrectAnswers() {
-        answerFeedback.innerHTML = '';
-        correctAnswers.forEach((ans) => {
-            const feedbackItem = document.createElement('div');
-            feedbackItem.classList.add('feedback-item', 'correct');
-            feedbackItem.innerHTML = `<strong>Question:</strong> ${ans.question} (${ans.topic})<br>`;
-            feedbackItem.innerHTML += `Your Answer: <span style="font-weight: bold;">${ans.selected.join(', ')}</span> - Correct!`;
-            answerFeedback.appendChild(feedbackItem);
-        });
-        correctAnswersTab.classList.add('active');
-        incorrectAnswersTab.classList.remove('active');
-        allAnswersTab.classList.remove('active');
+        displayFeedbackItems(correctAnswers, 'correct');
     }
 
     // Show incorrect answers
     function showIncorrectAnswers() {
-        answerFeedback.innerHTML = '';
-        incorrectAnswers.forEach((ans) => {
-            const feedbackItem = document.createElement('div');
-            feedbackItem.classList.add('feedback-item', 'incorrect');
-            feedbackItem.innerHTML = `<strong>Question:</strong> ${ans.question} (${ans.topic})<br>`;
-            feedbackItem.innerHTML += `Your Answer(s): <span style="font-weight: bold;">${ans.selected.join(', ')}</span><br>`;
-            feedbackItem.innerHTML += `Correct Answer(s): <span style="font-weight: bold;">${ans.correct.join(', ')}</span>`;
-            answerFeedback.appendChild(feedbackItem);
-        });
+        displayFeedbackItems(incorrectAnswers, 'incorrect');
+    }
+
+    // Show saved questions
+    function showSavedAnswers() {
+        answerFeedback.innerHTML = ''; // Clear main feedback area
+        savedAnswersList.innerHTML = ''; // Clear saved questions list
+        quizContainer.innerHTML = ''; // Hide quiz questions (if any were displayed)
+        submitQuizBtn.style.display = 'none'; // Hide quiz controls
+        retakeQuizBtn.style.display = 'none'; // Hide quiz controls
+        resetQuizBtn.style.display = 'block'; // Ensure reset is available from this view
+
+        // Update active tab styles
         correctAnswersTab.classList.remove('active');
-        incorrectAnswersTab.classList.add('active');
+        incorrectAnswersTab.classList.remove('active');
         allAnswersTab.classList.remove('active');
+        savedAnswersTab.classList.add('active'); // Set saved tab active
+
+        savedAnswersContainer.style.display = 'block'; // Show saved section
+
+        if (savedForReviewQuestions.length === 0) {
+            savedAnswersList.innerHTML = '<p>No questions saved for review yet.</p>';
+            clearSavedQuestionsBtn.style.display = 'none';
+            return;
+        }
+
+        clearSavedQuestionsBtn.style.display = 'block';
+
+        savedForReviewQuestions.forEach((q) => {
+            const feedbackItem = document.createElement('div');
+            feedbackItem.classList.add('feedback-item', 'saved'); // Add specific class for saved questions
+            feedbackItem.innerHTML = `<strong>Question:</strong> ${q.question} (${q.topic})<br>`;
+            feedbackItem.innerHTML += `Correct Answer(s): <span style="font-weight: bold;">${q.correct.join(', ')}</span>`;
+
+            const removeButton = document.createElement('button');
+            removeButton.classList.add('btn', 'btn-secondary', 'btn-small-feedback', 'remove-saved-btn');
+            removeButton.textContent = 'Remove';
+            removeButton.dataset.questionText = q.question; // Use question text for identification
+
+            removeButton.addEventListener('click', (e) => {
+                const textToRemove = e.target.dataset.questionText;
+                savedForReviewQuestions = savedForReviewQuestions.filter(sq => sq.question !== textToRemove);
+                saveQuestionsToLocalStorage();
+                showSavedAnswers(); // Re-render the list
+            });
+            feedbackItem.appendChild(removeButton);
+            savedAnswersList.appendChild(feedbackItem);
+        });
     }
 
     // Reset quiz settings and state
     function resetQuiz() {
-        numQuestionsSelect.value = Math.min(10, quizQuestions.length); // Reset to default
+        numQuestionsSelect.value = Math.min(10, quizQuestions.length); // Reset to default number
         topicFilterSelect.value = 'all'; // Reset to all topics
         timeLimitSelect.value = '0'; // Reset time limit
         quizSettings.style.display = 'block'; // Ensure settings are visible
         quizContainer.innerHTML = ''; // Clear questions
         answerFeedback.innerHTML = ''; // Clear feedback
+        savedAnswersList.innerHTML = ''; // Clear saved questions list
+        savedAnswersContainer.style.display = 'none'; // Hide saved questions container
+
         quizResults.style.display = 'none'; // Hide results
         submitQuizBtn.style.display = 'none'; // Hide submit button
         retakeQuizBtn.style.display = 'none'; // Hide retake button
         resetQuizBtn.style.display = 'none'; // Hide reset button
         clearInterval(timerInterval); // Stop any running timer
         timerDisplay.style.display = 'none'; // Hide timer display
+        
+        // Reset all tab buttons to inactive, then set 'All Answers' as active
         correctAnswersTab.classList.remove('active');
         incorrectAnswersTab.classList.remove('active');
-        allAnswersTab.classList.add('active'); // Reset tab styling
+        savedAnswersTab.classList.remove('active');
+        allAnswersTab.classList.add('active');
     }
 
     // Event listeners for quiz controls
@@ -1511,14 +1649,24 @@ console.log(`Total questions: ${quizQuestions.length}`);
     correctAnswersTab.addEventListener('click', showCorrectAnswers);
     incorrectAnswersTab.addEventListener('click', showIncorrectAnswers);
     allAnswersTab.addEventListener('click', showAllAnswers);
+    savedAnswersTab.addEventListener('click', showSavedAnswers); // New listener for saved tab
+    clearSavedQuestionsBtn.addEventListener('click', () => { // New listener for clear saved button
+        if (confirm('Are you sure you want to clear all saved questions? This action cannot be undone.')) {
+            savedForReviewQuestions = [];
+            saveQuestionsToLocalStorage();
+            showSavedAnswers(); // Re-render the empty list
+        }
+    });
 
-    // Initialize quiz settings on page load
+
+    // Initialize quiz settings and load saved questions on page load
+    loadSavedQuestions(); // Load saved questions first
     populateTopicFilter();
     populateNumQuestions();
     resetQuiz(); // Call resetQuiz to set initial state correctly
 
     // --- Scroll to Top Button ---
-    const scrollToTopBtn = document.getElementById('scroll-to-top');
+    const scrollToTopBtn = document.querySelector('.scroll-to-top');
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) { // Show button after scrolling 300px
