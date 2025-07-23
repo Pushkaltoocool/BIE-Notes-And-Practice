@@ -234,7 +234,7 @@
                     <h4>The Testing Process:</h4>
                     <ul>
                         <li><strong>Introduce the Scenario:</strong> Explain the prototype and the user’s task.</li>
-                        <li><strong>User Tries the Prototype:</b> The user interacts with the prototype, often “thinking aloud.”</li>
+                        <li><strong>User Tries the Prototype:</strong> The user interacts with the prototype, often “thinking aloud.”</li>
                         <li><strong>Observe & Note:</strong> Watch for confusion, questions, and errors.</li>
                         <li><strong>Gather Quick Feedback:</strong> Ask what worked well and what was difficult.</li>
                     </ul>
@@ -406,7 +406,7 @@
                             </ul>
                         </li>
                         <li><strong>Active Listening:</strong> Pay attention to both verbal and non-verbal cues. Use techniques like paraphrasing and asking clarifying probing questions.</li>
-                        <li><strong>Stay Neutral and Open-Minded:</b> Do not judge, challenge, or interrupt.</li>
+                        <li><strong>Stay Neutral and Open-Minded:</strong> Do not judge, challenge, or interrupt.</li>
                         <li><strong>Closing:</strong> End the interview warmly, summarize key points, and express gratitude.</li>
                     </ul>
                     <h4>II. Effective Email Writing</h4>
@@ -452,7 +452,7 @@
                         <li><strong>Adopting a Tech Giant Mindset:</strong> DBS adopted the mnemonic GANDALF (Google, Amazon, Netflix, Apple, LinkedIn, Facebook) to symbolize their aspiration to join the league of iconic tech companies, with the “D” representing DBS.</li>
                         <li><strong>Customer-Centric Operating Model:</strong> They created 33 platforms aligned with business segments, each led by both a business and an IT leader (“2-in-a-box” model).</li>
                         <li><strong>Managing Through Journeys:</strong> A program was introduced to address major customer pain points, such as account opening and ATM wait times.</li>
-                        <li><strong>Data-Driven Innovation:</b> Partnering with McKinsey, DBS transformed its operating model to leverage data and AI. They established a program that reduced AI deployment time from 18 months to less than 5 months.</li>
+                        <li><strong>Data-Driven Innovation:</strong> Partnering with McKinsey, DBS transformed its operating model to leverage data and AI. They established a program that reduced AI deployment time from 18 months to less than 5 months.</li>
                         <li><strong>Cultural and Talent Transformation:</strong> DBS invested in training employees in agile, big data, and journey thinking. They created tech hubs and used AI for HR functions like predicting employee exits.</li>
                     </ul>
                     <h4>The Impact:</h4>
@@ -482,7 +482,7 @@
 
         <section id="quiz-section" class="content-section">
             <h2 class="section-title">Practice Questions (MCQ & Multi-Select)</h2>
-            <div id="quiz-settings"> <!-- Removed style="display: none;" -->
+            <div id="quiz-settings">
                 <div class="quiz-settings-controls">
                     <label for="num-questions">Number of Questions:</label>
                     <select id="num-questions"></select>
@@ -527,8 +527,13 @@
                     <button id="all-answers-tab" class="tab-button active">All Answers</button>
                     <button id="correct-answers-tab" class="tab-button">Correct</button>
                     <button id="incorrect-answers-tab" class="tab-button">Incorrect</button>
+                    <button id="saved-answers-tab" class="tab-button">Saved for Review</button>
                 </div>
                 <div id="answer-feedback"></div>
+                <div id="saved-answers-container" style="display: none;">
+                    <button id="clear-saved-questions" class="btn btn-secondary" style="margin-bottom: 20px;">Clear All Saved</button>
+                    <div id="saved-answers-list"></div>
+                </div>
             </div>
         </section>
 
