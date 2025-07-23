@@ -1,3 +1,4 @@
+/* --- Variables for Theming --- */
 :root {
     --bg-color: 244, 247, 246;
     --text-color: 51, 51, 51;
@@ -317,9 +318,10 @@ body.dark-mode {
 }
 
 .collapsible-card.open .card-content {
-    max-height: 2000px;
+    max-height: 5000px; /* Increased greatly to accommodate longer content */
     padding: 20px;
     opacity: 1;
+    overflow-y: auto; /* Allows vertical scrolling if content exceeds max-height */
 }
 
 .card-content h4 {
@@ -758,3 +760,4 @@ body.dark-mode {
         width: auto; /* Allow button to size naturally */
         align-self: flex-end; /* Align button to the end on its own row */
     }
+}
