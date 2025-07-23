@@ -257,136 +257,143 @@
                 </div>
             </div>
 
-                        <!-- Software Development Process & Methodologies -->
-            <div class="collapsible-card">
-                <div class="card-header">
-                    <h3 class="topic-title">Software Development Process & Methodologies</h3>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
-                </div>
-                <div class="card-content">
-                    <h3 id="-software-development-life-cycle-sdlc-"><strong>Software Development Life Cycle (SDLC)</strong></h3>
-                    <p>The Software Development Life Cycle (SDLC) is a systematic process used to design, develop, and test high-quality software. The primary goal is to produce software that meets or exceeds customer expectations within a set timeframe and budget. It involves a series of distinct phases, each with its own set of activities and deliverables.</p>
-                    <p><strong>Key Roles in the Process:</strong></p>
-                    <ul>
-                        <li><strong>Stakeholders:</strong> These are individuals or groups who are affected by the project's outcome. This includes clients, end-users, project managers, and developers. A successful project must address the needs of all stakeholders.</li>
-                        <li><strong>End-Users:</strong> These are the people who will directly use the final software product. Understanding their needs is one of the most critical aspects of the development process.</li>
-                    </ul>
-                    <h3 id="-phases-of-a-typical-sdlc-"><strong>Phases of a Typical SDLC</strong></h3>
-                    <p>The development of a software application, such as an online store for home decor, involves six crucial phases:</p>
-                    <ol>
-                        <li><p><strong>Planning and Requirement Gathering:</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> This initial phase involves discussions between the client and the development team to define the basic requirements.</li>
-                            <li><strong>How:</strong> The team determines the purpose of the application, identifies the target end-users, and outlines key elements like format, attributes, and the overall user interface design.</li>
-                        </ul>
-                        </li>
-                        <li><p><strong>Requirement Analysis:</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> In this stage, the gathered requirements are analyzed for their validity and feasibility.</li>
-                            <li><strong>How:</strong> The team delves into detailed information about each element, calibrates security protocols, and performs a risk analysis. All this information is compiled into a <strong>Software Requirements Specification (SRS) document</strong>.</li>
-                        </ul>
-                        </li>
-                        <li><p><strong>Design:</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> This phase focuses on creating the architectural design of the software.</li>
-                            <li><strong>How:</strong> Based on the SRS document, software designers define the overall system architecture. This design is then documented in the <strong>Design Document Specification (DDS)</strong>, which is shared with stakeholders for review and feedback.</li>
-                        </ul>
-                        </li>
-                        <li><p><strong>Implementation (Coding):</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> This is the phase where the actual coding of the software takes place.</li>
-                            <li><strong>How:</strong> Developers write the code using appropriate programming languages and tools like compilers and debuggers, following the guidelines established in the design phase. This is often the longest phase of the SDLC.</li>
-                        </ul>
-                        </li>
-                        <li><p><strong>Testing:</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> The software is rigorously tested to identify and fix any defects or bugs.</li>
-                            <li><strong>How:</strong> The application is deployed in various testing environments. The Quality Assurance (QA) team performs tests to check all functionalities. Any discovered bugs are reported back to the developers for fixing. This is an iterative cycle of testing and debugging until the software is stable.</li>
-                        </ul>
-                        </li>
-                        <li><p><strong>Deployment and Maintenance:</strong></p>
-                        <ul>
-                            <li><strong>What:</strong> The completed software is released to users, and ongoing support is provided.</li>
-                            <li><strong>How:</strong> The development team makes the application accessible to users, for instance, by setting up installation links. The maintenance part of this phase involves fixing any bugs that arise after launch and releasing regular updates with enhancements for better performance and user experience.</li>
-                        </ul>
-                        </li>
-                    </ol>
-                    <hr>
-                    <h3 id="-functional-vs-non-functional-requirements-"><strong>Functional vs. Non-Functional Requirements</strong></h3>
-                    <p>Understanding the two main types of requirements is crucial for a successful project.</p>
-                    <table>
-                    <thead>
-                    <tr>
-                    <th style="text-align:left"><strong>Requirement Type</strong></th>
-                    <th style="text-align:left"><strong>What it is</strong></th>
-                    <th style="text-align:left"><strong>How it is expressed</strong></th>
-                    <th style="text-align:left"><strong>Examples</strong></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                    <td style="text-align:left"><strong>Functional</strong></td>
-                    <td style="text-align:left">Describes <strong>what</strong> the system MUST do. These are the capabilities and features of the system.</td>
-                    <td style="text-align:left">These are often expressed as actions or functions the user can perform.</td>
-                    <td style="text-align:left">An application that can support the placing of orders by users.<br>An ATM system shall validate the inserted card.</td>
-                    </tr>
-                    <tr>
-                    <td style="text-align:left"><strong>Non-Functional</strong></td>
-                    <td style="text-align:left">Describes <strong>how</strong> the system performs a certain function. These are the constraints or characteristics the system MUST MEET.</td>
-                    <td style="text-align:left">These often relate to performance, security, reliability, and usability.</td>
-                    <td style="text-align:left">Saving an order must be completed in less than 5 seconds.<br>The system must support 1000 concurrent users.<br>The ATM system shall use 256-bit encryption.</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <hr>
-                    <h3 id="-software-development-methodologies-agile-vs-waterfall-"><strong>Software Development Methodologies: Agile vs. Waterfall</strong></h3>
-                    <p>There are different approaches or methodologies to manage the SDLC. The two most common are Waterfall and Agile.</p>
-                    <table>
-                    <thead>
-                    <tr>
-                    <th style="text-align:left"><strong>Aspect</strong></th>
-                    <th style="text-align:left"><strong>Waterfall Model</strong></th>
-                    <th style="text-align:left"><strong>Agile Model</strong></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                    <td style="text-align:left"><strong>Approach</strong></td>
-                    <td style="text-align:left">A highly structured, sequential design process. Each phase must be completed before the next begins, flowing downwards like a waterfall.</td>
-                    <td style="text-align:left">An iterative and collaborative approach where requirements and solutions evolve. It is a mindset based on a set of values and principles.</td>
-                    </tr>
-                    <tr>
-                    <td style="text-align:left"><strong>Flexibility</strong></td>
-                    <td style="text-align:left">Rigid. It cannot easily accommodate changing requirements once a phase is complete.</td>
-                    <td style="text-align:left">Highly flexible. It welcomes changing requirements, even late in development, to provide a competitive advantage.</td>
-                    </tr>
-                    <tr>
-                    <td style="text-align:left"><strong>Delivery</strong></td>
-                    <td style="text-align:left">The working software is only produced late in the life cycle.</td>
-                    <td style="text-align:left">Delivers working software frequently, in small, consumable increments called sprints or iterations.</td>
-                    </tr>
-                    <tr>
-                    <td style="text-align:left"><strong>Customer Involvement</strong></td>
-                    <td style="text-align:left">Low. The customer is heavily involved at the beginning (requirements) and the end (delivery).</td>
-                    <td style="text-align:left">High. Constant two-way communication and collaboration with the customer is a core principle.</td>
-                    </tr>
-                    <tr>
-                    <td style="text-align:left"><strong>Best for...</strong></td>
-                    <td style="text-align:left">Smaller projects where requirements are very well understood and fixed from the start.</td>
-                    <td style="text-align:left">Projects with frequently changing requirements where flexibility and speed are important.</td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    <h4 id="-the-agile-manifesto-"><strong>The Agile Manifesto</strong></h4>
-                    <p>The Agile methodology is guided by four core values:</p>
-                    <ul>
-                    <li><strong>Individuals and interactions</strong> over processes and tools</li>
-                    <li><strong>Working software</strong> over comprehensive documentation</li>
-                    <li><strong>Customer collaboration</strong> over contract negotiation</li>
-                    <li><strong>Responding to change</strong> over following a plan</li>
-                    </ul>
-                </div>
-            </div>
+  <!-- Software Development Process & Methodologies -->
+<div class="collapsible-card">
+    <div class="card-header">
+        <h3 class="topic-title">Software Development Process & Methodologies</h3>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+    </div>
+    <div class="card-content">
+        <h3><strong>Software Development Life Cycle (SDLC)</strong></h3>
+        <p>SDLC is a structured approach to designing, developing, and testing software to meet customer needs within time and budget. It includes distinct phases, each with specific tasks and outputs.</p>
+        <p><strong>Key Roles:</strong></p>
+        <ul>
+            <li><strong>Stakeholders:</strong> Anyone impacted by the project, like clients, users, managers, and developers.</li>
+            <li><strong>End-Users:</strong> People who will use the final product; their needs are essential to guide development.</li>
+        </ul>
+
+        <h3><strong>Phases of SDLC</strong></h3>
+        <p>Creating an app (e.g., online decor store) involves 6 key phases:</p>
+        <ol>
+            <li><strong>Planning & Requirements:</strong>
+                <ul>
+                    <li><strong>What:</strong> Define basic needs with the client.</li>
+                    <li><strong>How:</strong> Identify purpose, users, UI, and core features.</li>
+                </ul>
+            </li>
+            <li><strong>Requirement Analysis:</strong>
+                <ul>
+                    <li><strong>What:</strong> Check validity and feasibility.</li>
+                    <li><strong>How:</strong> Detail requirements, assess risks, and document in the <strong>SRS</strong>.</li>
+                </ul>
+            </li>
+            <li><strong>Design:</strong>
+                <ul>
+                    <li><strong>What:</strong> Create system structure.</li>
+                    <li><strong>How:</strong> Use SRS to draft <strong>DDS</strong> and share for review.</li>
+                </ul>
+            </li>
+            <li><strong>Implementation (Coding):</strong>
+                <ul>
+                    <li><strong>What:</strong> Develop the actual software.</li>
+                    <li><strong>How:</strong> Write code using design guidelines and tools. Longest phase.</li>
+                </ul>
+            </li>
+            <li><strong>Testing:</strong>
+                <ul>
+                    <li><strong>What:</strong> Detect and fix issues.</li>
+                    <li><strong>How:</strong> QA team tests in various environments; bugs are fixed in cycles.</li>
+                </ul>
+            </li>
+            <li><strong>Deployment & Maintenance:</strong>
+                <ul>
+                    <li><strong>What:</strong> Release to users and maintain.</li>
+                    <li><strong>How:</strong> Make software accessible, fix bugs, and issue updates.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <hr>
+
+        <h3><strong>Functional vs. Non-Functional Requirements</strong></h3>
+        <p>Projects require two types of requirements:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th><strong>Type</strong></th>
+                    <th><strong>What</strong></th>
+                    <th><strong>How</strong></th>
+                    <th><strong>Examples</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Functional</strong></td>
+                    <td>What the system must do.</td>
+                    <td>Expressed as features or actions.</td>
+                    <td>Place orders; validate card.</td>
+                </tr>
+                <tr>
+                    <td><strong>Non-Functional</strong></td>
+                    <td>How the system performs.</td>
+                    <td>Related to speed, security, etc.</td>
+                    <td>Order saves in <5s; supports 1000 users; uses encryption.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h3><strong>Software Development Methodologies: Agile vs. Waterfall</strong></h3>
+        <p>Two common SDLC approaches are Waterfall and Agile:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th><strong>Aspect</strong></th>
+                    <th><strong>Waterfall</strong></th>
+                    <th><strong>Agile</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Approach</strong></td>
+                    <td>Step-by-step, sequential.</td>
+                    <td>Iterative and evolving.</td>
+                </tr>
+                <tr>
+                    <td><strong>Flexibility</strong></td>
+                    <td>Rigid to changes.</td>
+                    <td>Very adaptable.</td>
+                </tr>
+                <tr>
+                    <td><strong>Delivery</strong></td>
+                    <td>Product at end.</td>
+                    <td>Frequent, small releases.</td>
+                </tr>
+                <tr>
+                    <td><strong>Customer Involvement</strong></td>
+                    <td>Low (start and end only).</td>
+                    <td>High (continuous feedback).</td>
+                </tr>
+                <tr>
+                    <td><strong>Best for</strong></td>
+                    <td>Clear, fixed projects.</td>
+                    <td>Flexible, evolving projects.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4><strong>The Agile Manifesto</strong></h4>
+        <p>Agile is built on 4 values:</p>
+        <ul>
+            <li><strong>Individuals & interactions</strong> over tools</li>
+            <li><strong>Working software</strong> over docs</li>
+            <li><strong>Customer collaboration</strong> over contracts</li>
+            <li><strong>Responding to change</strong> over rigid plans</li>
+        </ul>
+    </div>
+</div>
+
 
             <!-- Practical Skills -->
             <div class="collapsible-card">
